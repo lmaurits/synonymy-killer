@@ -55,7 +55,7 @@ def report(dataset):
     print("{:.4f} synonymy ratio (n_forms / nlangs*n_meanings).".format(synonymy_ratio))
     print("maximum {} forms per language-meaning pair.".format(max_forms))
 
-def _write_new_dataset(directory, old_dataset, forms_to_keep):
+def write_new_dataset(directory, old_dataset, forms_to_keep):
    
     new_dataset = Wordlist.in_dir(directory)
     new_dataset.add_component("CognateTable")
@@ -73,7 +73,7 @@ def kill_random(dataset):
     for synonym_list in forms.values():
         survivor = random.sample(synonym_list, 1)[0]
         forms_to_keep.add(survivor)
-    _write_new_dataset('mydataset', dataset, forms_to_keep)
+    return forms_to_keep
 
 def kill_minimum_cognates(dataset):
     return _kill_minimax_cognates(dataset, "min")
@@ -138,7 +138,7 @@ def _kill_minimax_cognates(dataset, mode="min"):
                         forms_to_keep.add(f)
                         break
 
-    _write_new_dataset('mydataset', dataset, forms_to_keep)
+    return forms_to_keep
 
 def main():
 
@@ -162,15 +162,20 @@ def main():
     # Take action
     if args.report:
         report(dataset)
+        return
     elif args.random:
-        kill_random(dataset)
+        forms_to_keep = kill_random(dataset)
     elif args.mincog:
-        kill_minimum_cognates(dataset)
+        forms_to_keep = kill_minimum_cognates(dataset)
     elif args.maxcog:
-        kill_maximum_cognates(dataset)
+        forms_to_keep = kill_maximum_cognates(dataset)
     # Report by default
     else:
         report(dataset)
+        return
+
+    # Save results
+    write_new_dataset('mydataset', dataset, forms_to_keep)
 
 if __name__ == "__main__":
     main()
