@@ -149,6 +149,7 @@ def main():
     parser.add_argument("metadata", help="CLDF metadata file.")
     parser.add_argument("--maxcog", action="store_true", help="Remove synonyms to maximise cognate class count.")
     parser.add_argument("--mincog", action="store_true", help="Remove synonyms to minimise cognate class count.")
+    parser.add_argument("-o", "--outdir", type=str, default="", help="Output directory.")
     parser.add_argument("--report", action="store_true", help="Display wordlist statistics.")
     parser.add_argument("--random", action="store_true", help="Remove synonyms at random.")
     args = parser.parse_args()
@@ -177,7 +178,8 @@ def main():
         return
 
     # Save results
-    write_new_dataset('mydataset', dataset, forms_to_keep)
+    outdir = args.outdir or "mydataset"
+    write_new_dataset(outdir, dataset, forms_to_keep)
 
 if __name__ == "__main__":
     main()
