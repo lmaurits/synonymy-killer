@@ -58,8 +58,10 @@ def report(dataset):
 def write_new_dataset(directory, old_dataset, forms_to_keep):
    
     new_dataset = Wordlist.in_dir(directory)
+    new_dataset.add_component("LanguageTable")
     new_dataset.add_component("CognateTable")
     new_dataset.write(
+            LanguageTable = [row for row in old_dataset["LanguageTable"]],
             FormTable = [row for row in old_dataset["FormTable"] if row["ID"] in forms_to_keep],
             CognateTable = [row for row in old_dataset["CognateTable"] if row["Form_ID"] in forms_to_keep],
             )
